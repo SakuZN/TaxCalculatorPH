@@ -8,7 +8,7 @@ class TaxCalculator < Gtk::Application
     signal_connect "activate" do |application|
       # Create a top-level window with a grid
       window = Gtk::ApplicationWindow.new(application)
-      window.set_title("Tax Calculator")
+      window.set_title("Tax Calculator PH 2023")
       window.set_size_request(500, 400)
       window.set_position(:center)
 
