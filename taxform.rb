@@ -3,11 +3,20 @@
 module TAXFORM
 
   def getPagIBIG(monthly_income)
-
     if monthly_income <= 1500
-      return monthly_income * 0.01
+      piFund = monthly_income * 0.01
+      if piFund > 100
+        return 100
+      else
+        return piFund
+      end
     else
-      return monthly_income * 0.02
+      piFund = monthly_income * 0.02
+      if piFund > 100
+        return 100
+      else
+        return piFund
+      end
     end
   end
   def getSSS(monthly_income)

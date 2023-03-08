@@ -133,12 +133,11 @@ class TaxCalculator < Gtk::Application
   def calculate_taxes
     monthly_income = @entry_income.text.gsub(/[^0-9\.]/, '').to_f
     @entry_income.text = "\u20B1 " + @entry_income.text.to_f.to_s
-    pag_ibig = getPagIBIG(monthly_income).round(2)
-    sss = getSSS(monthly_income).round(2)
-    philhealth = getPhilHealth(monthly_income).round(2)
-    total = (pag_ibig + sss + philhealth).round(2)
+    pag_ibig = getPagIBIG(monthly_income).to_f.round(2)
+    sss = getSSS(monthly_income).to_f.round(2)
+    philhealth = getPhilHealth(monthly_income).to_f.round(2)
+    total = getTotalContributions(sss, philhealth, pag_ibig).to_f.round(2)
 
-    #limit to 3 decimal places
     @entry_sss.text = "\u20B1 " + sss.to_s
     @entry_philhealth.text = "\u20B1 " + philhealth.to_s
     @entry_pag_ibig.text = "\u20B1 " + pag_ibig.to_s
