@@ -145,4 +145,31 @@ module TAXFORM
   def getTotalContributions(sss, philhealth, pagibig)
     return sss + philhealth + pagibig
   end
+  def getIncomeTax(total_contributions, monthly_income)
+    taxable_income = monthly_income - total_contributions
+    case taxable_income
+    when 0...20832
+      return 0
+    when 20833...33332
+      return (taxable_income - 20833) * 0.15
+    when 33333...66666
+      return (taxable_income - 33333) * 0.20 + 1875
+    when 66667...166666
+      return (taxable_income - 66667) * 0.25 + 8541.80
+    when 166667...666666
+      return (taxable_income - 166667) * 0.30 + 33541.80
+    else
+      return (taxable_income - 666667) * 0.35 + 183541.80
+    end
+  end
+
+  def getNetPayTax(monthly_income, income_tax)
+    return monthly_income - income_tax
+  end
+  def getTotalDeductions(total_contributions, income_tax)
+    return total_contributions + income_tax
+  end
+  def getNetPayDeduct(monthly_income, total_deductions)
+    return monthly_income - total_deductions
+  end
 end

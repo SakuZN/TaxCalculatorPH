@@ -132,17 +132,36 @@ class TaxCalculator < Gtk::Application
 
   def calculate_taxes
     monthly_income = @entry_income.text.gsub(/[^0-9\.]/, '').to_f
-    @entry_income.text = "\u20B1 " + @entry_income.text.to_f.to_s
+    @entry_income.text = "\u20B1 " + numFormat(@entry_income.text.to_f.to_s)
+    #Monthly Contributions
     pag_ibig = getPagIBIG(monthly_income).to_f.round(2)
+
     sss = getSSS(monthly_income).to_f.round(2)
     philhealth = getPhilHealth(monthly_income).to_f.round(2)
     total = getTotalContributions(sss, philhealth, pag_ibig).to_f.round(2)
 
-    @entry_sss.text = "\u20B1 " + sss.to_s
-    @entry_philhealth.text = "\u20B1 " + philhealth.to_s
-    @entry_pag_ibig.text = "\u20B1 " + pag_ibig.to_s
-    @entry_total_contribution.text = "\u20B1 " + total.to_s
+    #Tax Computation
+    taxable_income = getIncomeTax(total, monthly_income).to_f.round(2)
+    netPay = getNetPayTax(monthly_income, taxable_income).to_f.round(2)
+    total_deduction = getTotalDeductions(total, taxable_income).to_f.round(2)
+    net_pay_after_deduction = getNetPayDeduct(monthly_income, total_deduction).to_f.round(2)
+    @entry_sss.text = "\u20B1 " + numFormat(sss.to_s)
+    @entry_philhealth.text = "\u20B1 " + numFormat(philhealth.to_s)
+    @entry_pag_ibig.text = "\u20B1 " + numFormat(pag_ibig.to_s)
+    @entry_total_contribution.text = "\u20B1 " + numFormat(total.to_s)
+    if taxable_income > 0
+      @income_tax_entry.text = "\u20B1 " + numFormat(taxable_income.to_s)
+    else
+      @income_tax_entry.text = "\u20B1 0.00 - Tax Exempted!"
+    end
+    @net_pay_entry.text = "\u20B1 " + numFormat(netPay.to_s)
+    @entry_total_deduction.text = "\u20B1 " + numFormat(total_deduction.to_s)
+    @entry_net_pay.text = "\u20B1 " + numFormat(net_pay_after_deduction.to_s)
 
+  end
+  def numFormat(num)
+    formatted_answer = sprintf("%0.2f", num).gsub(/(\d)(?=(\d{3})+(?!\d))/, "\\1,")
+    return formatted_answer
   end
 end
 
