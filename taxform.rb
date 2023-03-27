@@ -148,7 +148,7 @@ module TAXFORM
   def getIncomeTax(total_contributions, monthly_income)
     taxable_income = monthly_income - total_contributions
 
-    #added negative check for taxable income
+    #added negative check
     if taxable_income < 0
       return 0
     end
