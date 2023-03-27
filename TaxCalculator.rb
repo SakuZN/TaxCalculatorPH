@@ -137,20 +137,20 @@ class TaxCalculator < Gtk::Application
     pag_ibig = getPagIBIG(monthly_income).to_f.round(2)
 
     sss = getSSS(monthly_income).to_f.round(2)
-    philhealth = getPhilHealth(monthly_income).to_f.round(2)
+    philhealth = getPhilHealth(monthly_income).to_f.floor(2)
     total = getTotalContributions(sss, philhealth, pag_ibig).to_f.round(2)
 
     #Tax Computation
-    taxable_income = getIncomeTax(total, monthly_income).to_f.round(2)
-    netPay = getNetPayTax(monthly_income, taxable_income).to_f.round(2)
-    total_deduction = getTotalDeductions(total, taxable_income).to_f.round(2)
+    income_tax = getIncomeTax(total, monthly_income).to_f.round(2)
+    netPay = getNetPayTax(monthly_income, income_tax).to_f.round(2)
+    total_deduction = getTotalDeductions(total, income_tax).to_f.round(2)
     net_pay_after_deduction = getNetPayDeduct(monthly_income, total_deduction).to_f.round(2)
     @entry_sss.text = "\u20B1 " + numFormat(sss.to_s)
     @entry_philhealth.text = "\u20B1 " + numFormat(philhealth.to_s)
     @entry_pag_ibig.text = "\u20B1 " + numFormat(pag_ibig.to_s)
     @entry_total_contribution.text = "\u20B1 " + numFormat(total.to_s)
-    if taxable_income > 0
-      @income_tax_entry.text = "\u20B1 " + numFormat(taxable_income.to_s)
+    if income_tax > 0
+      @income_tax_entry.text = "\u20B1 " + numFormat(income_tax.to_s)
     else
       @income_tax_entry.text = "\u20B1 0.00 - Tax Exempted!"
     end

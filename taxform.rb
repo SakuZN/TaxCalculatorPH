@@ -52,7 +52,7 @@ module TAXFORM
     when 10750...11250
       return 11000 * 0.045
     when 11250...11750
-      return 115000 * 0.045
+      return 11500 * 0.045
     when 11750...12250
       return 12000 * 0.045
     when 12250...12750
@@ -147,6 +147,11 @@ module TAXFORM
   end
   def getIncomeTax(total_contributions, monthly_income)
     taxable_income = monthly_income - total_contributions
+
+    if taxable_income < 0
+      return 0
+    end
+
     case taxable_income
     when 0...20832
       return 0
