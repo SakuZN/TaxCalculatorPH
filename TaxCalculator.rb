@@ -137,6 +137,7 @@ class TaxCalculator < Gtk::Application
     pag_ibig = getPagIBIG(monthly_income).to_f.round(2)
 
     sss = getSSS(monthly_income).to_f.round(2)
+    #Changed round to floor
     philhealth = getPhilHealth(monthly_income).to_f.floor(2)
     total = getTotalContributions(sss, philhealth, pag_ibig).to_f.round(2)
 
