@@ -133,8 +133,8 @@ module TAXFORM
   def getPhilHealth(monthly_income)
     # contribution is set at 4.5%
     case monthly_income
-    when 0..10000
-      return 10000 * 0.045 / 2
+    when 0...10000
+      return (10000 * 0.045) / 2
     when 10000...90000
       return monthly_income * 0.045 / 2
     else
@@ -149,20 +149,18 @@ module TAXFORM
     taxable_income = monthly_income - total_contributions
 
     # added negative check
-    if taxable_income < 0
-      return 0
-    end
+    if taxable_income <= 0 then return 0 end
 
     case taxable_income
-    when 0...20832
+    when 0...20833
       return 0
-    when 20833...33332
+    when 20833..33332
       return (taxable_income - 20833) * 0.15
-    when 33333...66666
+    when 33333..66666
       return (taxable_income - 33333) * 0.20 + 1875
-    when 66667...166666
+    when 66667..166666
       return (taxable_income - 66667) * 0.25 + 8541.80
-    when 166667...666666
+    when 166667..666666
       return (taxable_income - 166667) * 0.30 + 33541.80
     else
       return (taxable_income - 666667) * 0.35 + 183541.80

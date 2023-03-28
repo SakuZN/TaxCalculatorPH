@@ -34,7 +34,7 @@ class TaxCalculator < Gtk::Application
       button_calculate.override_font(font_desc)
       button_calculate.signal_connect('clicked') do
         #if empty or invalid characters display error message
-        if @entry_income.text.empty? || @entry_income.text.to_i == 0
+        if @entry_income.text.empty? || @entry_income.text.to_i < 0
           dialog = Gtk::MessageDialog.new(:parent => window, :flags => :destroy_with_parent,
                                           :type => :error, :buttons_type => :close,
                                           :message => "Please enter a valid monthly income.")
@@ -58,7 +58,7 @@ class TaxCalculator < Gtk::Application
       @income_tax_entry.set_editable(false)
       grid.attach(@income_tax_entry, 1, 3, 1, 1)
 
-      net_pay_label = Gtk::Label.new("Net Pay (after Income Tax)")
+      net_pay_label = Gtk::Label.new("Net Pay after Tax")
       grid.attach(net_pay_label, 0, 4, 1, 1)
 
       @net_pay_entry = Gtk::Entry.new
@@ -130,32 +130,21 @@ class TaxCalculator < Gtk::Application
       window.show_all
     end
   end
-  def custom_round(x)
-    rounded = if x % 1 == 0.5
-                if x.even?
-                  x.floor
-                else
-                  x.ceil
-                end
-              else
-                x.round(2)
-              end
-    rounded.round(2)
-  end
+
   def calculate_taxes
     monthly_income = @entry_income.text.gsub(/[^0-9\.]/, '').to_f.round(2)
     @entry_income.text = "\u20B1 " + numFormat(@entry_income.text.to_f.to_s)
     #Monthly Contributions
-    pag_ibig = custom_round(getPagIBIG(monthly_income)).round(2)
-    sss = custom_round(getSSS(monthly_income)).round(2)
-    philhealth = custom_round(getPhilHealth(monthly_income)).round(2)
-    total = custom_round(getTotalContributions(sss, philhealth, pag_ibig)).round(2)
+    pag_ibig = getPagIBIG(monthly_income)
+    sss = getSSS(monthly_income)
+    philhealth = getPhilHealth(monthly_income)
+    total = getTotalContributions(sss, philhealth, pag_ibig)
 
     #Tax Computation
-    income_tax = custom_round(getIncomeTax(total, monthly_income)).round(2)
-    netPay = custom_round(getNetPayTax(monthly_income, income_tax)).round(2)
-    total_deduction = custom_round(getTotalDeductions(total, income_tax)).round(2)
-    net_pay_after_deduction = custom_round(getNetPayDeduct(monthly_income, total_deduction)).round(2)
+    income_tax = getIncomeTax(total, monthly_income)
+    netPay = getNetPayTax(monthly_income, income_tax)
+    total_deduction = getTotalDeductions(total, income_tax)
+    net_pay_after_deduction = getNetPayDeduct(monthly_income, total_deduction)
 
     @entry_sss.text = "\u20B1 " + numFormat(sss.to_s)
     @entry_philhealth.text = "\u20B1 " + numFormat(philhealth.to_s)
@@ -176,6 +165,19 @@ class TaxCalculator < Gtk::Application
     formatted_answer = sprintf("%0.2f", num).gsub(/(\d)(?=(\d{3})+(?!\d))/, "\\1,")
     return formatted_answer
   end
+end
+
+def custom_round(x)
+  rounded = if x % 1 == 0.5
+              if x.even?
+                x.floor
+              else
+                x.ceil
+              end
+            else
+              x.round(2)
+            end
+  rounded.round(2)
 end
 
 # Start the application
