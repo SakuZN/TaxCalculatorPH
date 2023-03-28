@@ -1,5 +1,6 @@
 require 'gtk3'
 require 'pango'
+require 'bigdecimal'
 require_relative 'taxform'
 class TaxCalculator < Gtk::Application
   include TAXFORM
@@ -129,23 +130,33 @@ class TaxCalculator < Gtk::Application
       window.show_all
     end
   end
-
+  def custom_round(x)
+    rounded = if x % 1 == 0.5
+                if x.even?
+                  x.floor
+                else
+                  x.ceil
+                end
+              else
+                x.round(2)
+              end
+    rounded.round(2)
+  end
   def calculate_taxes
-    monthly_income = @entry_income.text.gsub(/[^0-9\.]/, '').to_f
+    monthly_income = @entry_income.text.gsub(/[^0-9\.]/, '').to_f.round(2)
     @entry_income.text = "\u20B1 " + numFormat(@entry_income.text.to_f.to_s)
     #Monthly Contributions
-    pag_ibig = getPagIBIG(monthly_income).to_f.round(2)
-
-    sss = getSSS(monthly_income).to_f.round(2)
-    #Changed round to floor
-    philhealth = getPhilHealth(monthly_income).to_f.floor(2)
-    total = getTotalContributions(sss, philhealth, pag_ibig).to_f.round(2)
+    pag_ibig = custom_round(getPagIBIG(monthly_income)).round(2)
+    sss = custom_round(getSSS(monthly_income)).round(2)
+    philhealth = custom_round(getPhilHealth(monthly_income)).round(2)
+    total = custom_round(getTotalContributions(sss, philhealth, pag_ibig)).round(2)
 
     #Tax Computation
-    income_tax = getIncomeTax(total, monthly_income).to_f.round(2)
-    netPay = getNetPayTax(monthly_income, income_tax).to_f.round(2)
-    total_deduction = getTotalDeductions(total, income_tax).to_f.round(2)
-    net_pay_after_deduction = getNetPayDeduct(monthly_income, total_deduction).to_f.round(2)
+    income_tax = custom_round(getIncomeTax(total, monthly_income)).round(2)
+    netPay = custom_round(getNetPayTax(monthly_income, income_tax)).round(2)
+    total_deduction = custom_round(getTotalDeductions(total, income_tax)).round(2)
+    net_pay_after_deduction = custom_round(getNetPayDeduct(monthly_income, total_deduction)).round(2)
+
     @entry_sss.text = "\u20B1 " + numFormat(sss.to_s)
     @entry_philhealth.text = "\u20B1 " + numFormat(philhealth.to_s)
     @entry_pag_ibig.text = "\u20B1 " + numFormat(pag_ibig.to_s)
@@ -158,6 +169,7 @@ class TaxCalculator < Gtk::Application
     @net_pay_entry.text = "\u20B1 " + numFormat(netPay.to_s)
     @entry_total_deduction.text = "\u20B1 " + numFormat(total_deduction.to_s)
     @entry_net_pay.text = "\u20B1 " + numFormat(net_pay_after_deduction.to_s)
+
 
   end
   def numFormat(num)
