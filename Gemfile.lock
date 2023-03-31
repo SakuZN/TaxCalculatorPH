@@ -41,6 +41,8 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
+  atk
+  glib2
   gtk3
 
 BUNDLED WITH
