@@ -1,5 +1,15 @@
 # frozen_string_literal: true
-
+=begin
+********************
+Name:
+CAASI, Samatha Nicole L.
+MARCELLANA, John Patric T.
+NOCHE, Zach Matthew,
+VICTORIA, Alfred Eugene
+Language: Ruby
+Paradigm: Object-Oriented and Functional Paradigm
+********************
+=end
 module TAXFORM
 
   def getPagIBIG(monthly_income)

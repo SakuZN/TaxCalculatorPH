@@ -1,6 +1,16 @@
+=begin
+********************
+Name:
+CAASI, Samatha Nicole L.
+MARCELLANA, John Patric T.
+NOCHE, Zach Matthew,
+VICTORIA, Alfred Eugene
+Language: Ruby
+Paradigm: Object-Oriented and Functional Paradigm
+********************
+=end
 require 'gtk3'
 require 'pango'
-require 'bigdecimal'
 require_relative 'taxform'
 class TaxCalculator < Gtk::Application
   include TAXFORM
